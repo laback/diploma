@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body bgcolor="#f0f8ff">
+<div layout:fragment="content">
+    <center><h1>Список категорий</h1></center>
+
+    <table class="table table-striped table-bordered ">
+        <tr>
+            <th class="align-middle text-center">Имя категории</th>
+            <th class="align-middle text-center">Категория родитель</th>
+            <th></th>
+        </tr>
+        <tr th:each="category : ${categories}">
+            <td class="align-middle text-center" th:text="${category.getCategoryName()}"></td>
+            <td class="align-middle text-center">
+                <span th:if="${category.getParentCategory() == null}">-</span>
+                <span th:unless="${category.getParentCategory() == null}" th:text="${category.getParentCategory().getCategoryName()}"></span>
+            </td>
+            <td class="align-middle text-center">
+                <form th:method="DELETE" th:action="'/user/categories/' + ${category.getId()}">
+                    <input type="submit" class="btn btn-danger" value="Удалить" />
+                </form>
+            </td>
+        </tr>
+
+    </table>
+
+    <div th:if="${page > 0}">
+        <a th:href="${page - 1}">Назад</a>
+    </div>
+    <div th:if="${page < maxPages}">
+        <a th:href="${page + 1}">Вперёд</a>
+    </div>
+</div>
+</body>
+</html>

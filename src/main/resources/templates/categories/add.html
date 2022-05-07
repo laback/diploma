@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout">
+
+<body bgcolor="#f0f8ff">
+<div layout:fragment="content">
+    <center><h1>Добавление категории</h1></center>
+    <form align="center" th:action="@{/user/categories}" method="post" th:object="${category}">
+        <div class="form-group">
+            <label for="name">Имя категории</label><br>
+            <input type="text" id="name" placeholder="Введите имя категории" required th:field="*{categoryName}"><br>
+        </div>
+        <div class="form-group">
+            <label for="parentCategory">Категория родитель(если это верхняя категория, то оставить пустым)</label><br>
+            <select th:field="*{parentCategory}" id="parentCategory">
+                <option th:value="${null}" th:text="Пустое"></option>
+                <option th:each="selectedParentCategory : ${categories}" th:value="${selectedParentCategory.id}" th:text="${selectedParentCategory.getCategoryName()}"></option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" class="btn btn-success" value="Добавить категорию" />
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

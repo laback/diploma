@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout">
+
+    <body bgcolor="#f0f8ff">
+        <div layout:fragment="content">
+            <center><h1>Регистрация нового пользователя</h1></center>
+            <form align="center" th:action="@{/admin/registration}" method="post" th:object="${userForm}">
+                <div class="form-group">
+                    <label for="surname">Фамилия</label><br>
+                    <input type="text" id="surname" placeholder="Введите фамилию" required th:field="*{surName}"><br>
+                </div>
+                <div class="form-group">
+                    <label for="name">Имя</label><br>
+                    <input type="text" id="name" placeholder="Введите имя" required th:field="*{firstName}"><br>
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Отчество</label><br>
+                    <input type="text" id="lastname" placeholder="Введите отчество" required th:field="*{lastName}"><br>
+                </div>
+
+                <div class="form-group">
+                    <label for="roleId" >Выберите роль</label>
+                    <select id="roleId" th:field="*{roleId}" onchange="change()">
+                        <option th:value="3" selected="selected">Покупатель</option>
+                        <option sec:authorize="hasAuthority('ROLE_ADMIN')" th:value="2">Сотрудник</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label id="emailLabel" for="email">Почта</label><br>
+                    <input type="text" id="email" placeholder="Введите почту" th:field="*{email}"><br>
+                </div>
+
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-success" value="Зарегестрировать пользователя" />
+                </div>
+            </form>
+
+            <script>
+
+                document.getElementById('email').hidden = true;
+                document.getElementById('emailLabel').hidden = true;
+
+                function change(){
+
+                    let selected = document.getElementById('roleId').value;
+
+                    let hide = document.getElementById('email');
+                    let hideLabel = document.getElementById('emailLabel');
+
+                    if(selected === '3'){
+                        hide.hidden = true;
+                        hideLabel.hidden = true;
+                    }
+                    else {
+                        hide.hidden = false;
+                        hideLabel.hidden = false;
+                    }
+                }
+            </script>
+        </div>
+    </body>
+</html>

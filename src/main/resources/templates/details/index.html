@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="C:\Users\Mikita_Korshykau\Desktop\diploma\application\src\main\resources\static\css\dropdown.css">
+</head>
+<body bgcolor="#f0f8ff">
+<div layout:fragment="content">
+    <center><h1>Список категорий</h1></center>
+    <div class="dropdown" align="center">
+        <button class="dropbtn">ТО и фильтра</button>
+        <div class="dropdown-content">
+            <span><strong>Расходники</strong></span>
+            <a href="">Аккумулятор</a>
+            <a href="">Комплект ГРМ</a>
+            <a href="">Ремень ГРМ</a>
+            <a href="">Свеча зажигания</a>
+            <a href="">Тормозные диски</a>
+            <a href="">Тормозные колодки</a>
+        </div>
+    </div>
+    <div class="dropdown" align="center">
+        <button class="dropbtn">ТО и фильтра</button>
+        <div class="dropdown-content">
+            <span><strong>Расходники</strong></span>
+            <a href="www.google.com">google</a>
+        </div>
+    </div>
+    <table class="table table-striped table-bordered ">
+        <tr>
+            <th class="align-middle text-center">Наименование детали</th>
+            <th class="align-middle text-center">Категория</th>
+            <th class="align-middle text-center">Цена</th>
+            <th></th>
+        </tr>
+        <tr th:each="detail : ${details}">
+            <td class="align-middle text-center" th:text="${user.getDetailName()}"></td>
+            <td class="align-middle text-center" th:text="${user.getCategory.getCategoryName()}"></td>
+            <td class="align-middle text-center" th:text="${user.getDetailCost()}"></td>
+        </tr>
+
+    </table>
+
+    <div th:if="${page > 0}">
+        <a th:href="${page - 1}">Назад</a>
+    </div>
+    <div th:if="${page < maxPages}">
+        <a th:href="${page + 1}">Вперёд</a>
+    </div>
+</div>
+</body>
+</html>
