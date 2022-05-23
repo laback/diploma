@@ -44,7 +44,7 @@ public class User extends BaseEntity implements UserDetails {
     private Long roleId;
 
     public User(User user){
-        this(user.getSurName(), user.getFirstName(), user.getLastName(), user.email, user.getRoleId());
+        this(user.getSurName(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoleId());
     }
 
     public User(String surName, String firstName, String lastName, String email, Long roleId) {
@@ -57,6 +57,10 @@ public class User extends BaseEntity implements UserDetails {
 
     public User() {
 
+    }
+
+    public String getFio(){
+        return String.format("%s %s %s", surName, firstName, lastName);
     }
 
     @Override

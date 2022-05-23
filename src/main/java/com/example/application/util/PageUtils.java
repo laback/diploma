@@ -7,13 +7,15 @@ import java.util.stream.Collectors;
 
 public class PageUtils {
 
+    private final static long ELEMENTS_PER_PAGE = 5;
+
     private PageUtils(){}
 
-    public static <T> long getMaxPages(JpaRepository<T, Long> repository){
-        return (long) Math.ceil(repository.findAll().size() / 15);
+    public static <T> long getMaxPages(List<T> entities){
+        return (long) Math.ceil(entities.size() / ELEMENTS_PER_PAGE);
     }
 
-    public static <T> List<T> getAllEntitiesByPage(JpaRepository<T, Long> repository, int page){
-        return repository.findAll().stream().skip(page * 15L).limit(15).collect(Collectors.toList());
+    public static <T> List<T> getAllEntitiesByPage(List<T> entities, int page){
+        return entities.stream().skip(page * ELEMENTS_PER_PAGE).limit(ELEMENTS_PER_PAGE).collect(Collectors.toList());
     }
 }

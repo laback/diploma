@@ -14,7 +14,7 @@ public class Role extends BaseEntity implements GrantedAuthority {
     @Column(name = "role_name")
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     @Transient
     private List<User> users;
 

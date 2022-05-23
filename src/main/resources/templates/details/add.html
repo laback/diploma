@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout">
+<body bgcolor="#f0f8ff">
+<div layout:fragment="content">
+    <script th:inline="javascript">
+
+
+        function addOneAttribute() {
+            document.getElementById('addAttributeButton').remove();
+
+            let containerR = document.getElementsByClassName('container__r');
+
+            containerR[0].insertAdjacentHTML("beforeend", '<div class="item" id="attributeNameDiv">\n' +
+                '                    <input type="text" name="attributeName" onchange="setAttributes()" id="attributeName" placeholder="Введите имя атрибута" required><br>\n' +
+                '                </div>');
+            containerR[0].insertAdjacentHTML("beforeend", '<div class="item">\n' +
+                '                    <input type="text" name="attribute" onchange="setAttributes()" id="attribute" placeholder="Введите атрибут" required><br>\n' +
+                '                </div>');
+            containerR[0].insertAdjacentHTML("beforeend", '<button id="addAttributeButton" class="btn btn-success" onclick="addOneAttribute()">Добавить ещё одно свойство</button>');
+        }
+
+        function setAttributes(){
+
+            let attributeNames = document.getElementsByName('attributeName');
+            let attributes = document.getElementsByName('attribute');
+
+            let result = "";
+
+            for(let i = 0; i < attributeNames.length; i++){
+                result += attributeNames[i].value + ':' + attributes[i].value + ",";
+            }
+
+            result = result.substr(0, result.length - 1);
+
+            console.log(result);
+
+            document.getElementById('detailAttributes').value = result;
+
+        }
+
+
+    </script>
+    <center><h1>Добавление детали</h1></center>
+    <form th:action="@{/user/detail}" method="post" th:object="${detail}">
+        <input type="hidden" th:field="*{stringAttributes}" id="detailAttributes">
+        <div class="container">
+            <div class="container__l">
+                <div class="item">
+                    <label for="detailName">Наименование детали</label><br>
+                    <input type="text" id="detailName" placeholder="Введите имя детали" required th:field="*{detailName}"><br>
+                </div>
+                <div class="item">
+                    <label for="detailVendorCode">Vin код детали</label><br>
+                    <input type="text" id="detailVendorCode" placeholder="Введите vin код" required th:field="*{detailVendorCode}"><br>
+                </div>
+                <div class="item">
+                    <label for="detailDescription">Описание детали</label><br>
+                    <input type="text" id="detailDescription" placeholder="Введите описание детали" required th:field="*{detailDescription}"><br>
+                </div>
+                <div class="form-group">
+                    <label for="category">Выберите категорию детали</label><br>
+                    <select th:field="*{category}" id="category">
+                        <option th:each="selectedCategory : ${categories}" th:value="${selectedCategory.id}" th:text="${selectedCategory.getCategoryName()}"></option>
+                    </select>
+                </div>
+                <div class="item">
+                    <label for="detailCount">Количество деталей</label><br>
+                    <input type="number" id="detailCount" placeholder="Введите количество деталей" required th:field="*{detailCount}"><br>
+                </div>
+                <div class="item">
+                    <label for="detailCost">Стоимость детали</label><br>
+                    <input type="number" id="detailCost" placeholder="Введите стоимость детали" required th:field="*{detailCost}"><br>
+                </div>
+            </div>
+            <div class="container__r">
+
+                <div class="item">
+                    <label for="attributeName">Наименование атрибута</label><br>
+                    <input type="text" name="attributeName" id="attributeName" onchange="setAttributes()" placeholder="Введите имя атрибута" required ><br>
+                </div>
+
+                <div class="item">
+                    <label for="attribute">Атрибут</label><br>
+                    <input type="text" name="attribute" id="attribute" onchange="setAttributes()" placeholder="Введите атрибут" required ><br>
+                </div>
+
+                <button id="addAttributeButton" class="btn btn-success" onclick="addOneAttribute()">Добавить ещё одно свойство</button>
+            </div>
+        </div>
+
+
+        <div class="form-group" align="center">
+            <input type="submit" class="btn btn-success" onclick="setAttributes()" value="Добавить деталь" />
+        </div>
+    </form>
+</div>
+</body>
+</html>

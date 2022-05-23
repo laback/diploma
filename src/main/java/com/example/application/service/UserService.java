@@ -20,23 +20,24 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
 
     UserRepository userRepository;
-    RoleRepository roleRepository;
     PasswordResetTokenRepository resetTokenRepository;
+    RoleService roleService;
 
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     EmailSender sender;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordResetTokenRepository passwordResetTokenRepository, BCryptPasswordEncoder bCryptPasswordEncoder, EmailSender sender) {
+    public UserService(UserRepository userRepository, RoleService roleService, PasswordResetTokenRepository passwordResetTokenRepository, BCryptPasswordEncoder bCryptPasswordEncoder, EmailSender sender) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
         this.resetTokenRepository = passwordResetTokenRepository;
 
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -85,7 +86,7 @@ public class UserService implements UserDetailsService {
     //Добавляет пользователя
     public void add(User user) throws MessagingException {
 
-        if(user.getRole().getId() == 2L || user.getRole().getId() == 1){
+        if(Objects.equals(user.getRole().getId(), roleService.getEmployeeRoleId()) || Objects.equals(user.getRole().getId(), roleService.getAdminRoleId())){
 
             user.appendUniqueNumber(getUniqueNumber());
 
@@ -99,6 +100,12 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
 
+    }
+
+    public void addUsers(List<User> users) throws MessagingException {
+        for(var user: users){
+            add(user);
+        }
     }
 
     //Обновляет пользователя

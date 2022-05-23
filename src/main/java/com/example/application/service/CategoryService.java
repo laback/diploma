@@ -3,6 +3,7 @@ package com.example.application.service;
 
 import com.example.application.model.Category;
 import com.example.application.repository.CategoryRepository;
+import com.example.application.repository.DetailRepository;
 import com.example.application.util.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,23 +16,41 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final DetailRepository detailRepository;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, DetailRepository detailRepository) {
         this.categoryRepository = categoryRepository;
+        this.detailRepository = detailRepository;
     }
 
     //Возвращает все категории
-    public List<Category> getAllCategoriesByPage(int page){
-        return PageUtils.getAllEntitiesByPage(categoryRepository, page);
+    public List<Category> getCategoriesByPage(List<Category> categories, int page){
+
+        setDetailsCount(categories);
+        return PageUtils.getAllEntitiesByPage(categories, page);
+    }
+
+    public List<Category> getAllCategories(String parentCategoryName){
+        var categories = categoryRepository.findAll();
+
+        if(parentCategoryName != null && !parentCategoryName.isBlank()){
+            categories = categories.stream().filter(category -> category.getParentCategory()!= null && parentCategoryName.toLowerCase().contains(category.getParentCategory().getCategoryName().toLowerCase())).collect(Collectors.toList());
+        }
+
+        return categories;
     }
 
     public List<Category> getAllCategories(){
         return categoryRepository.findAll();
     }
 
-    public long getMaxPages(){
-        return PageUtils.getMaxPages(categoryRepository);
+    public List<Category> getAllChildCategory(){
+        return getAllCategories().stream().filter(category -> category.getParentCategory() != null).collect(Collectors.toList());
+    }
+
+    public long getMaxPages(List<Category> categories){
+        return PageUtils.getMaxPages(categories);
     }
 
     //Добавляет категорию
@@ -54,5 +73,13 @@ public class CategoryService {
     //Удаляет категорию
     public void deleteCategory(Long id){
         categoryRepository.deleteById(id);
+    }
+
+    private void setDetailsCount(List<Category> categories){
+        categories.forEach(category -> {
+            if(category.getParentCategory() != null){
+                category.setDetailsCount(detailRepository.getDetailsByCategory(category).size());
+            }
+        });
     }
 }

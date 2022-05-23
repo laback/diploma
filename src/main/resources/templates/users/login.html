@@ -9,6 +9,49 @@
         <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css"
               rel="stylesheet">
         <title>Авторизация</title>
+        <style>
+            .container,
+            .container__l,
+            .container__r {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                align-content: flex-start;
+                font-size: 25px;
+            }
+
+            .container__l{
+                flex: 0 1 auto;
+                display: grid;
+                grid-template-columns: repeat(1, 1fr);
+                grid-gap: 10px;
+                margin: 5px;
+                padding: 5px;
+            }
+
+            .container__r{
+
+                flex: 0 1 auto;
+                display: grid;
+                grid-template-columns: repeat(1, 1fr);
+                grid-gap: 10px;
+                margin: 5px;
+                padding: 5px;
+            }
+
+            .item {
+                margin: 5px;
+                padding: 5px;
+            }
+
+
+            #wrap {
+                min-height: 100%;
+            }
+            #main {
+                padding-bottom: 100px;
+            }
+        </style>
     </head>
     <body bgcolor="#f0f8ff">
         <center>
@@ -19,24 +62,70 @@
             Неверный логин или пароль
         </p>
 
-        <form th:action="@{/login}" align="center" method="post">
-            <div class="form-group">
-                <label for="username">Логин</label><br>
-                <input type="text" id="username" name="username" placeholder="Введите логин" required/><br>
-            </div>
+        <div>
+            <div class="container">
+                <div class="container__l">
+                    <div class="item">
+                        <output>Автоматизированная система учёта продажи автозапчастей для индивидуального предпринимателя</output>
+                    </div>
+                    <div class="item">
+                        Основные функции приложения
+                        <ul>
+                            <li>
+                                Складской учёт
+                            </li>
+                            <li>
+                                Кадровый учёт
+                            </li>
+                            <li>
+                                Подбор оригиналов и аналогов по коду
+                            </li>
+                            <li>
+                                Формирование заказов клиентов
+                            </li>
+                            <li>
+                                Автоматизированное формирование отчётов по результатам работы
+                                и различным категориям (периоды времени, виды деталей, продажи, работа
+                                персонала)
+                            </li>
+                            <li>
+                                Реализация системы скидок
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="text-align: center">
+                        <img src="http://127.0.0.1:8887/logo.png" width=150 height=150  alt="лого"/>
+                    </div>
+                </div>
+                <div class="container__r">
+                    <div class="item">
+                        <form th:action="@{/login}" align="center" method="post">
 
-            <div class="form-group">
-                <label for="password">Пароль</label><br>
-                <input type="password" id="password" name="password" placeholder="Введите пароль" required/><br>
-            </div>
+                            <div class="form-group">
+                                <label for="username">Логин</label><br>
+                                <input type="text" id="username" name="username" placeholder="Введите логин" required/><br>
+                            </div>
 
-            <div class="form-group">
-                <input type="submit" class="btn btn-success" value="Войти" />
-            </div>
-        </form>
+                            <div class="form-group">
+                                <label for="password">Пароль</label><br>
+                                <input type="password" id="password" name="password" placeholder="Введите пароль" required/><br>
+                            </div>
 
-        <form align="center" th:action="@{/resetPassword}" method="get">
-            <input class="btn btn-dark" type="submit" value="Забыли пароль"/>
-        </form>
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-success" value="Войти" />
+                            </div>
+                        </form>
+
+                        <form align="center" th:action="@{/resetPassword}" method="get">
+                            <input class="btn btn-dark" type="submit" value="Забыли пароль"/>
+                        </form>
+                    </div>
+                    <div class="item">
+                        <output>Выполнил студент Коршиков Н.В. <br> ГГТУ 2022</output>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </body>
 </html>

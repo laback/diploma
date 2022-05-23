@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body bgcolor="#f0f8ff">
+<div layout:fragment="content">
+
+    <center><h1>Формирование отчётов</h1></center>
+
+    <div class="container">
+        <div class="container__l">
+            <form th:action="@{report/periodOrderReport}">
+                <div class="item">
+                    <output>Заказы, сформированные между указанными датами</output>
+                </div>
+                <div class="item">
+                    <label for="beginDate">Введите начальную дату</label>
+                    <input type="datetime-local" id="beginDate" name="beginDate"/>
+                </div>
+                <div class="item">
+                    <label for="endDate">Введите конечную дату</label>
+                    <input type="datetime-local" id="endDate" name="endDate"/>
+                </div>
+                <div class="item" align="center">
+                    <input type="submit" class="btn btn-success" value="Сформировать отчёт" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

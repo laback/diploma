@@ -22,8 +22,8 @@
                 <div class="form-group">
                     <label for="roleId" >Выберите роль</label>
                     <select id="roleId" th:field="*{roleId}" onchange="change()">
-                        <option th:value="3" selected="selected">Покупатель</option>
-                        <option sec:authorize="hasAuthority('ROLE_ADMIN')" th:value="2">Сотрудник</option>
+                        <option th:value="${customerRoleId}" selected="selected">Покупатель</option>
+                        <option sec:authorize="hasAuthority('ROLE_ADMIN')" th:value="${employeeRoleId}">Сотрудник</option>
                     </select>
                 </div>
 
@@ -34,7 +34,7 @@
 
 
                 <div class="form-group">
-                    <input type="submit" class="btn btn-success" value="Зарегестрировать пользователя" />
+                    <input type="submit" class="btn btn-success" value="Зарегистрировать пользователя" />
                 </div>
             </form>
 

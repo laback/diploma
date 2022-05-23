@@ -4,50 +4,146 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="C:\Users\Mikita_Korshykau\Desktop\diploma\application\src\main\resources\static\css\dropdown.css">
 </head>
 <body bgcolor="#f0f8ff">
 <div layout:fragment="content">
-    <center><h1>Список категорий</h1></center>
-    <div class="dropdown" align="center">
-        <button class="dropbtn">ТО и фильтра</button>
-        <div class="dropdown-content">
-            <span><strong>Расходники</strong></span>
-            <a href="">Аккумулятор</a>
-            <a href="">Комплект ГРМ</a>
-            <a href="">Ремень ГРМ</a>
-            <a href="">Свеча зажигания</a>
-            <a href="">Тормозные диски</a>
-            <a href="">Тормозные колодки</a>
-        </div>
-    </div>
-    <div class="dropdown" align="center">
-        <button class="dropbtn">ТО и фильтра</button>
-        <div class="dropdown-content">
-            <span><strong>Расходники</strong></span>
-            <a href="www.google.com">google</a>
-        </div>
-    </div>
-    <table class="table table-striped table-bordered ">
+
+
+
+    <center><h1>Список деталей</h1></center>
+    <form align="center" th:action="@{http://localhost:8001/user/detail/0}">
+        Артикул: <input type="text" name="vinCode" id="vinCode" size="50" th:value="${vinCode}" />
+        &nbsp;
+        Имя детали: <input type="text" name="detailName" id="detailName" size="50" th:value="${detailName}" />
+        &nbsp;
+        <input type="submit" class="btn btn-success" value="Найти" />
+
+    </form>
+
+    <form align="center" th:action="@{http://localhost:8001/user/detailInStock}">
+        <input type="submit" class="btn btn-success" value="Детали в наличии" />
+    </form>
+
+    <nav>
+        <ul class="topmenu">
+            <li style="margin-left: 2%"><a class="down">Расходники</a>
+                <ul class="submenu">
+                    <li><a href="http://localhost:8001/user/detail/Аккумулятор/0">Аккумулятор</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Комплект ГРМ/0">Комплект ГРМ</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Ремень ГРМ/0">Ремень ГРМ</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Свеча зажигания/0">Свеча зажигания</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Тормозные диски/0">Тормозные диски</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Тормозные колодки/0">Тормозные колодки</a></li>
+                </ul>
+            </li>
+            <li>
+                <a class="down">Фильтра</a>
+                <ul class="submenu">
+                    <li><a href="http://localhost:8001/user/detail/Воздушный фильтр/0">Воздушный фильтр</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Комплект фильтров/0">Комплект фильтров</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Масляный фильтр/0">Масляный фильтр</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Топливный фильтр/0">Топливный фильтр</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Фильтр антифриза/0">Фильтр антифриза</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Фильтр салона/0">Фильтр салона</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Фильтр коробки/0">Фильтр коробки</a></li>
+                </ul>
+            </li>
+            <li>
+                <a class="down">Тормозные элементы</a>
+                <ul class="submenu" style="height: auto">
+                    <li><a href="http://localhost:8001/user/detail/Комплект дисковых тормозов/0">Комплект дисковых тормозов</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Комплект направляющей суппорта/0">Комплект направляющей суппорта</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Ремкомплект барабанных колодок/0">Ремкомплект барабанных колодок</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Скобы тормозных колодок/0">Скобы тормозных колодок</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Стояночный тормоз/0">Стояночный тормоз</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Тормозной барабан/0">Тормозной барабан</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Тормозной поршень/0">Тормозной поршень</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Тормозные диски/0">Тормозные диски</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Тормозные колодки/0">Тормозные колодки</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Тормозные колодки барабанные/0">Тормозные колодки барабанные</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Трос ручного тормоза/0">Трос ручного тормоза</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="down">Электронные компоненты</a>
+                <ul class="submenu" style="height: auto">
+                    <li><a href="http://localhost:8001/user/detail/Датчик АБС/0">Датчик АБС</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Датчик износа тормозных колодок/0">Датчик износа тормозных колодок</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Ремкомплект барабанных колодок/0">Ремкомплект барабанных колодок</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Регулировка динамики движения/0">Регулировка динамики движения</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Выключатель фонаря сигнала торможения/0">Выключатель фонаря сигнала торможения</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Гидроаккумулятор, реле давления/0">Гидроаккумулятор, реле давления</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="down">Прокладки двигателя</a>
+                <ul class="submenu" style="height: auto">
+                    <li><a href="http://localhost:8001/user/detail/Комплект прокладок двигателя/0">Комплект прокладок двигателя</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Прокладка впускного коллектора/0">Прокладка впускного коллектора</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Прокладка выпускного коллектора/0">Прокладка выпускного коллектора</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Прокладка ГБЦ/0">Прокладка ГБЦ</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Прокладка клапанной крышки/0">Прокладка клапанной крышки</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Прокладка масляного поддона/0">Прокладка масляного поддона</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="down">Турбины</a>
+                <ul class="submenu" style="height: auto">
+                    <li><a href="http://localhost:8001/user/detail/Интеркулер/0">Интеркулер</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Прокладка турбины/0">Прокладка турбины</a></li>
+                    <li><a href="http://localhost:8001/user/detail/Турбина/0">Турбина</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <br>
+    <h1 th:if="${details.isEmpty()}" align="center">Деталей или их заменителей/аналогов нет в наличии</h1>
+    <input type="hidden" id="currentPage" name="currentPage"/>
+    <table th:unless="${details.isEmpty()}" class="table table-striped table-bordered ">
         <tr>
             <th class="align-middle text-center">Наименование детали</th>
             <th class="align-middle text-center">Категория</th>
-            <th class="align-middle text-center">Цена</th>
+            <th class="align-middle text-center">Цена (BYN)</th>
+            <th class="align-middle text-center">Количество</th>
+            <th></th>
+            <th></th>
             <th></th>
         </tr>
         <tr th:each="detail : ${details}">
-            <td class="align-middle text-center" th:text="${user.getDetailName()}"></td>
-            <td class="align-middle text-center" th:text="${user.getCategory.getCategoryName()}"></td>
-            <td class="align-middle text-center" th:text="${user.getDetailCost()}"></td>
+            <td class="align-middle text-center" th:text="${detail.getDetailName() + ' ' + detail.getDetailVendorCode()}"></td>
+            <td class="align-middle text-center" th:text="${detail.getCategory.getCategoryName()}"></td>
+            <td class="align-middle text-center" th:text="${detail.getDetailCost()}"></td>
+            <td class="align-middle text-center" th:text="${detail.getDetailCount()}"></td>
+            <td class="align-middle text-center">
+                <a class="btn btn-secondary" th:href="'/user/detail/getDetail/' + ${detail.getId()}">Подробнее</a>
+            </td>
+            <td class="align-middle text-center">
+                <form th:method="POST" th:action="'/user/detail/increase/' + ${detail.getId()}">
+                    <input type="submit" class="btn btn-success" value="Увеличить" />
+                </form>
+            </td>
+            <div th:if="${detail.detailCount > 0}">
+                <td class="align-middle text-center">
+                    <form th:method="POST" th:action="'/user/detail/decrease/' + ${detail.getId()}">
+                        <input type="submit" class="btn btn-danger" value="Уменьшить" />
+                    </form>
+                </td>
+            </div>
         </tr>
 
     </table>
 
-    <div th:if="${page > 0}">
-        <a th:href="${page - 1}">Назад</a>
+    <div style="display: inline-block" th:if="${page > 0}">
+        <a class="btn btn-secondary" onclick="onPrevPage()">Назад</a>
     </div>
-    <div th:if="${page < maxPages}">
-        <a th:href="${page + 1}">Вперёд</a>
+    <div style="display: inline-block; float: right"  th:if="${page < maxPages}">
+        <a class="btn btn-secondary" onclick="onNextPage()">Вперёд</a>
+    </div>
+    <div style="display: inline-block; margin-left: 43%">
+        <a class="btn btn-success" th:href="'/user/detail/add'">Добавить деталь</a>
     </div>
 </div>
 </body>

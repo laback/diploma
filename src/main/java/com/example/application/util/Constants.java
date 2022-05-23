@@ -4,6 +4,7 @@ public class Constants {
 
     public static final String CREDENTIALS_THEME = "Account credentials";
     public static final String RESET_PASSWORD_THEME = "Reset password";
+    public static final String READY_ORDER_THEME = "Ваш заказ готов";
 
     public static final String PROPERTY_HOST_KEY = "mail.smtp.host";
     public static final String PROPERTY_HOST_VALUE = "smtp.mail.ru";

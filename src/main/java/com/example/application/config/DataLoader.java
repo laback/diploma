@@ -1,10 +1,7 @@
 package com.example.application.config;
 
-import com.example.application.model.Category;
-import com.example.application.model.Role;
-import com.example.application.model.User;
-import com.example.application.service.CategoryService;
-import com.example.application.service.UserService;
+import com.example.application.model.*;
+import com.example.application.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +14,9 @@ import javax.management.Query;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 //Заполняет базу данных, если она пустая
 @Component
@@ -27,34 +26,264 @@ public class DataLoader implements ApplicationRunner {
 
     private final CategoryService categoryService;
 
-    @Value("${surname}")
-    private String surname;
+    private final RoleService roleService;
 
-    @Value("${firstname}")
-    private String firstname;
+    private final DetailService detailService;
 
-    @Value("${lastname}")
-    private String lastname;
+    private final OrderService orderService;
 
-    @Value("${email}")
-    private String email;
+    private final OrderDetailService orderDetailService;
+
+    private final static String COMMA = ",";
 
     @Autowired
-    public DataLoader(UserService userService, CategoryService categoryService) {
+    public DataLoader(UserService userService, CategoryService categoryService, RoleService roleService, DetailService detailService, OrderService orderService, OrderDetailService orderDetailService) {
         this.userService = userService;
         this.categoryService = categoryService;
+        this.roleService = roleService;
+        this.detailService = detailService;
+        this.orderService = orderService;
+        this.orderDetailService = orderDetailService;
     }
 
     @Override
     public void run(ApplicationArguments args) throws MessagingException {
+        addRolesIfAbsent();
         addAdminIfAbsent();
+        addUsersIfAbsent();
         addCategoriesIfAbsent();
+        var details = addDetailsIfAbsent();
+        var orders = addOrdersIfAbsent();
+        addDetailsInOrderIfAbsent(details, orders);
+    }
+
+    private void addDetailsInOrderIfAbsent(List<Detail> details, List<Order> orders) {
+        if(orderDetailService.getAll().isEmpty() && details != null && orders != null){
+            orders.get(0).setOrderCost(orderDetailService.setDetailsInOrder(
+                    details.get(0).getId() + COMMA + 10 + COMMA + details.get(1).getId() + COMMA + 20,
+                    orders.get(0)
+            ));
+
+            orders.get(1).setOrderCost(orderDetailService.setDetailsInOrder(
+                    details.get(2).getId() + COMMA + 10 + COMMA + details.get(3).getId() + COMMA + 20,
+                    orders.get(1)
+            ));
+
+            orders.get(2).setOrderCost(orderDetailService.setDetailsInOrder(
+                    details.get(4).getId() + COMMA + 10 + COMMA + details.get(0).getId() + COMMA + 20,
+                    orders.get(2)
+            ));
+
+            orders.get(3).setOrderCost(orderDetailService.setDetailsInOrder(
+                    details.get(1).getId() + COMMA + 10 + COMMA + details.get(2).getId() + COMMA + 20,
+                    orders.get(3)
+            ));
+
+            orders.get(4).setOrderCost(orderDetailService.setDetailsInOrder(
+                    details.get(3).getId() + COMMA + 10 + COMMA + details.get(4).getId() + COMMA + 20,
+                    orders.get(4)
+            ));
+
+            orderService.save(orders);
+        }
+    }
+
+    private Map<String, List<User>> getCustomerAndEmployees(){
+
+        List<User> employees = new ArrayList<>();
+        List<User> customers = new ArrayList<>();
+
+        for(var user : userService.getAll()){
+            if (user.getRole().getId() == roleService.getCustomerRoleId()) {
+                customers.add(user);
+            } else {
+                employees.add(user);
+            }
+        }
+
+        return Map.of("customers", customers, "employees", employees);
+    }
+
+    private List<Order> addOrdersIfAbsent() {
+        List<Order> orders = null;
+
+        if(orderService.getAllOrders().isEmpty()){
+            var allUsers = getCustomerAndEmployees();
+
+            var customers = allUsers.get("customers");
+            var employees = allUsers.get("employees");
+
+            orderService.addOrder(new Order(
+                    customers.get(0),
+                    employees.get(0)
+            ));
+
+            orderService.addOrder(new Order(
+                    customers.get(1),
+                    employees.get(1)
+            ));
+
+            orderService.addOrder(new Order(
+                    customers.get(2),
+                    employees.get(0)
+            ));
+
+            orderService.addOrder(new Order(
+                    customers.get(1),
+                    employees.get(0)
+            ));
+
+            orderService.addOrder(new Order(
+                    customers.get(0),
+                    employees.get(1)
+            ));
+
+            orders = orderService.getAllOrders();
+        }
+
+        return orders == null ? orderService.getAllOrders().stream().limit(5).collect(Collectors.toList()) : orders;
+    }
+
+    private List<Detail> addDetailsIfAbsent(){
+        List<Detail> details = null;
+
+        if(detailService.getAllDetails().isEmpty()){
+
+            Category accum = categoryService.getCategoryByName("Аккумулятор");
+            Category complect = categoryService.getCategoryByName("Комплект ГРМ");
+            Category remen = categoryService.getCategoryByName("Ремень ГРМ");
+
+            detailService.addDetail(new Detail(
+                    accum,
+                    "EA722",
+                    "EXIDE",
+                    "Premium аккумулятор 12V 72Ah 720A ETN 0(R+) B13 278x175x175 16,5kg",
+                    getAccumAttribute(12, 72, 278, 176, 175, 0, "B13", 720, "EN"),
+                    100,
+                    300
+                    )
+            );
+
+            detailService.addDetail(new Detail(
+                    accum,
+                    "EC652",
+                    "EXIDE",
+                    "Батарея аккумуляторная \"Classic\", 12в 65а/ч",
+                    getAccumAttribute(12, 65, 278, 175, 175, 0, "B13", 540, "EN"),
+                    50,
+                    240
+            ));
+
+            detailService.addDetail(new Detail(
+                    accum,
+                    "EA640",
+                    "EXIDE",
+                    "Аккумулятор",
+                    getAccumAttribute(12, 64, 242, 175, 190, 0, "B13", 640, "EN"),
+                    73,
+                    310
+            ));
+
+            detailService.addDetail(new Detail(
+                    accum,
+                    "0092M60180",
+                    "BOSCH",
+                    "Аккумулятор для мототехники BOSCH MOBA AGM M6 12V 12AH 200A (YTX14-4/YTX14-BS) 152x88x147mm 5.02kg",
+                    getAccumAttribute(12, 12, 152, 88, 147, 1, "B00", 200, "Y5"),
+                    42,
+                    225
+            ));
+
+            detailService.addDetail(new Detail(
+                    accum,
+                    "AGM1212F",
+                    "EXIDE",
+                    "Аккумулятор",
+                    getAccumAttribute(12, 12, 100, 100, 150, 3, "B0", 150, "Y5"),
+                    56,
+                    150
+            ));
+
+            detailService.addDetail(new Detail(
+                    complect,
+                    "KTB259",
+                    "DAYCO",
+                    "Комплект ремня ГРМ",
+                    "",
+                    30,
+                    120
+            ));
+
+            detailService.addDetail(new Detail(
+                    remen,
+                    "5244XS",
+                    "GATES",
+                    "Ремень ГРМ",
+                    getRemenAttribute("STT-1", "Стекловолокно", "HNBR (Hydrierter Acryl-Nitril-Butadien-Kautschuk)", "черный", 148, 25, 9, 1410),
+                    40,
+                    35
+            ));
+
+            details = detailService.getAllDetails();
+        }
+
+        return details == null ? detailService.getAllDetails().stream().limit(7).collect(Collectors.toList()) : details;
+    }
+
+    private String getRemenAttribute(String param1, String param2, String param3, String param4, int param5, int param6, int param7, int param8){
+        return String.format("\"Номер рекомендуемого специального инструмента\" : \"%s\", " +
+                        "\"Материал\" : \"%s\"," +
+                        "\"Материал\" : \"%s\"," +
+                        "\"Цвет\" : \"%s\"," +
+                        "\"Число зубцов\" : \"%d\"," +
+                        "\"Ширина [мм]\" : \"%d\"," +
+                        "\"Межзубчатое расстояние [мм]\" : \"%d\"," +
+                        "\"Длина [мм]\" : \"%d\"",
+                param1, param2, param3, param4, param5, param6, param7, param8);
+    }
+
+    private String getAccumAttribute(int param1, int param2, int param3, int param4, int param5, int param6, String param7, int param8, String param9){
+        return String.format("\"Напряжение [В]\" : \"%d\", " +
+                "\"Емкость батареи [А·ч]\" : \"%d\"," +
+                "\"Длина [мм]\" : \"%d\"," +
+                "\"Ширина [мм]\" : \"%d\"," +
+                "\"Высота [мм]\" : \"%d\"," +
+                "\"Расположение полюсных выводов\" : \"%d\"," +
+                "\"Исполнение днищевой планки\" : \"%s\"," +
+                "\"Ток холодного пуска EN [A]\" : \"%d\"," +
+                "\"Вид зажима цепи\" : \"%s\"",
+                param1, param2, param3, param4, param5, param6, param7, param8, param9);
+    }
+
+    private void addUsersIfAbsent() throws MessagingException {
+        if(userService.getAll().size() == 1){
+            long employee = roleService.getEmployeeRoleId();
+            long customer = roleService.getCustomerRoleId();
+
+            List<User> users = List.of(
+                    new User("Егоров", "Евгений", "Андреевич", "laback2001@gmail.com", employee),
+                    new User("Ларчик", "Кирилл", "Игоревич", null, customer),
+                    new User("Зайцев", "Александр", "Викторович", null, customer),
+                    new User("Леоненко", "Анастасия", "Николаевна", null, customer)
+            );
+
+            userService.addUsers(users);
+        }
+    }
+
+    private void addRolesIfAbsent() {
+        if(roleService.getAll().isEmpty()){
+            roleService.addRoleByName("ROLE_ADMIN");
+            roleService.addRoleByName("ROLE_EMPLOYEE");
+            roleService.addRoleByName("ROLE_CUSTOMER");
+
+        }
     }
 
     //Добавляет администратора, если его нет
     private void addAdminIfAbsent() throws MessagingException {
         if(userService.getAll().isEmpty()){
-            userService.add(new User(surname, firstname, lastname, email, 1L));
+            userService.add(new User("Коршиков", "Никита", "Викторович", "labac2001@mail.ru", roleService.getAdminRoleId()));
         }
 
     }
@@ -75,7 +304,7 @@ public class DataLoader implements ApplicationRunner {
             beginIndex = setParentCategory(daughterCategories, "Электронные компоненты", beginIndex, 5);
             beginIndex = setParentCategory(daughterCategories, "Детали двигателя", beginIndex, 26);
             beginIndex = setParentCategory(daughterCategories, "Прокладки двигателя", beginIndex, 6);
-            beginIndex = setParentCategory(daughterCategories, "Ремни, цепи и натяжители", beginIndex, 13);
+            beginIndex = setParentCategory(daughterCategories, "Ремни, цепи и натяжители", beginIndex, 11);
             beginIndex = setParentCategory(daughterCategories, "Система спуска", beginIndex, 6);
             beginIndex = setParentCategory(daughterCategories, "Топливная система и управление двигателем", beginIndex, 9);
             beginIndex = setParentCategory(daughterCategories, "Турбины и компрессоры", beginIndex, 3);
@@ -219,13 +448,11 @@ public class DataLoader implements ApplicationRunner {
         categoryList.add(new Category("Прокладка масляного поддона"));
 
         categoryList.add(new Category("Клиновой ремень"));
-        categoryList.add(new Category("Комплект ГРМ"));
         categoryList.add(new Category("Натяжитель ремня генератора"));
         categoryList.add(new Category("Натяжитель ремня ГРМ"));
         categoryList.add(new Category("Натяжитель цепи ГРМ"));
         categoryList.add(new Category("Натяжной ролик ремня ГРМ"));
         categoryList.add(new Category("Ремень генератора"));
-        categoryList.add(new Category("Ремень ГРМ"));
         categoryList.add(new Category("Ролик ремня генератора"));
         categoryList.add(new Category("Ролик ремня ГРМ"));
         categoryList.add(new Category("Успокоитель цепи ГРМ"));

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout">
+<body bgcolor="#f0f8ff">
+<div layout:fragment="content">
+    <script th:inline="javascript">
+        window.onload = setDropDownList;
+
+
+        function setDropDownList(){
+            /*<![CDATA[*/
+            let select = document.getElementById("detailsSelect");
+
+            let detailsObject = /*[[${details}]]*/ "default";
+
+            for(let i = 0; i < detailsObject.length; i++){
+                let newOption = new Option(detailsObject[i].detailName + ' ' + detailsObject[i].detailVendorCode, detailsObject[i].id);
+                select.add(newOption, undefined);
+            }
+
+            /*]]>*/
+        }
+
+        function checkDetailsCount(){
+            let counts = document.getElementsByName("detailsCount");
+            let selects = document.getElementsByName("detailsSelect");
+
+            /*<![CDATA[*/
+
+            let resultMap = new Map();
+            for(let i = 0; i < selects.length; i++){
+                let oldValue = resultMap.get(parseInt(selects[i].value));
+                if(isNaN(oldValue)){
+                    resultMap.set(parseInt(selects[i].value), parseInt(counts[i].value));
+                } else{
+                    resultMap.set(parseInt(selects[i].value), resultMap.get(parseInt(selects[i].value)) + parseInt(counts[i].value));
+                }
+            }
+
+            for(let [key, value] of resultMap){
+                let detailsObject = /*[[${details}]]*/ "default";
+
+                for(let i = 0; i < detailsObject.length; i++){
+                    if(key == detailsObject[i].id){
+                        if(value > detailsObject[i].detailCount){
+                            alert('Деталей с именем ' + getDetailName(key) + ' на складе ' + detailsObject[i].detailCount);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            /*]]>*/
+
+            return resultMap;
+        }
+
+        function getDetailName(id){
+            /*<![CDATA[*/
+
+            let detailsObject = /*[[${details}]]*/ "default";
+
+            for(let i = 0; i < detailsObject.length; i++){
+                if(id == detailsObject[i].id){
+                    return detailsObject[i].detailName;
+                }
+            }
+
+            /*]]>*/
+        }
+
+        function addOneDetail() {
+            document.getElementById('addDetailButton').remove();
+
+            let containerR = document.getElementsByClassName('container__r');
+
+            let divItem = document.createElement("div")
+            divItem.setAttribute("class", "item");
+            let select = document.getElementById("detailsSelect");
+            let copiedSelect = select.cloneNode(true);
+
+            divItem.appendChild(copiedSelect);
+            containerR[0].appendChild(divItem);
+
+            containerR[0].insertAdjacentHTML("beforeend", '<div class="item">\n' +
+                '                    <input type="number" placeholder="Введите количество деталей" onchange="checkDetailsCount()" id="detailsCount" name="detailsCount" required/>\n' +
+                '                </div>');
+            containerR[0].insertAdjacentHTML("beforeend", '<button id="addDetailButton" class="btn btn-success" onclick="addOneDetail()">Добавить ещё одну деталь</button>');
+        }
+
+        function setDetails(){
+
+            let resultmap = checkDetailsCount();
+
+            alert([...resultmap.entries()])
+
+            document.getElementById('stringDetails').value = [...resultmap.entries()];
+
+        }
+    </script>
+    <center><h1>Добавление заказа</h1></center>
+    <form th:action="@{/user/order}" method="post" th:object="${order}">
+        <input type="hidden" th:field="*{details}" id="stringDetails">
+        <div class="container">
+            <div class="container__l">
+                <div class="item">
+                    <label for="user">Выберите покупателя</label><br>
+                    <select th:field="*{user}" id="user">
+                        <option th:each="selectedUser : ${users}" th:value="${selectedUser.id}" th:text="${selectedUser.getSurName() + ' ' + selectedUser.getFirstName() + ' ' + selectedUser.getLastName()}"></option>
+                    </select>
+                </div>
+                <div class="item">
+                    <label for="discount" id="discountLabel">Введите размер скидки</label>
+                    <input type="number" title="Если размер указанной скидки превысит возможный, то установится максимально возможный размер скидки" id="discount" name="discount" th:field="*{discount}" placeholder="Введите размер скидки">
+                </div>
+            </div>
+
+            <div class="container__r">
+                <div class="item">
+                    <label for="detailsSelect">Выберите деталь</label><br>
+                    <select id="detailsSelect" name="detailsSelect">
+                        <option value="0">Выберите деталь</option>
+                    </select>
+                </div>
+                <div class="item">
+                    <label for="detailsCount">Введите количество</label><br>
+                    <input type="number" placeholder="Введите количество деталей" onchange="checkDetailsCount()" id="detailsCount" name="detailsCount" required/>
+                </div>
+
+                <button id="addDetailButton" class="btn btn-success" onclick="addOneDetail()">Добавить ещё одну деталь</button>
+            </div>
+        </div>
+
+        <div class="form-group" align="center">
+            <input type="submit" class="btn btn-success" onclick="setDetails()" value="Добавить заказ" />
+        </div>
+    </form>
+</div>
+</body>
+</html>

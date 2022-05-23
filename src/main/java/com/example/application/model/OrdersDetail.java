@@ -18,4 +18,13 @@ public class OrdersDetail extends BaseEntity{
     private Detail detail;
 
     private int count;
+
+    public OrdersDetail(Order order, Detail detail, int count) {
+        this.order = order;
+        this.detail = detail;
+        this.count = count;
+    }
+
+    public OrdersDetail() {
+    }
 }

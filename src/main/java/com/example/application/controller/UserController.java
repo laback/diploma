@@ -2,6 +2,7 @@ package com.example.application.controller;
 
 
 import com.example.application.model.User;
+import com.example.application.service.RoleService;
 import com.example.application.service.UserService;
 import com.example.application.viewModel.ChangePasswordViewModel;
 import com.example.application.viewModel.ResetPasswordViewModel;
@@ -17,10 +18,12 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     //Возращает форму для авторизации
@@ -39,7 +42,9 @@ public class UserController {
 
     //Возвращает форму для регистрации пользователя
     @GetMapping("admin/registration")
-    public String registration(@ModelAttribute("userForm") User user){
+    public String registration(@ModelAttribute("userForm") User user, Model model){
+        model.addAttribute("employeeRoleId", roleService.getEmployeeRoleId());
+        model.addAttribute("customerRoleId", roleService.getCustomerRoleId());
 
         return "users/registration";
 

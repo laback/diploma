@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout">
+
+<body bgcolor="#f0f8ff">
+<div layout:fragment="content">
+    <script th:inline="javascript">
+        window.onload = formOutputDetails;
+
+
+        function formOutputDetails(){
+            let container = document.getElementsByClassName("container__r2")[0];
+
+            /*<![CDATA[*/
+
+            let details = /*[[${details}]]*/ 'default';
+
+            /*]]>*/
+
+            console.log(details)
+
+            for(let i = 0; i < details.length; i++){
+                container.insertAdjacentHTML("beforeend", "<div class=\"item\">\n" +
+                    "                    <span>" +  details[i].detail.detailName + " </span>\n" +
+                    "                </div>")
+
+                container.insertAdjacentHTML("beforeend", "<div class=\"item\">\n" +
+                    "                    <span>" +  details[i].detailsCount + " </span>\n" +
+                    "                </div>")
+                container.insertAdjacentHTML("beforeend", "<div class=\"item\">\n" +
+                    "                    <span>" +  details[i].detailsCost + "</span>\n" +
+                    "                </div>")
+            }
+        }
+    </script>
+    <center><h1 th:text="${order.getUser().getSurName() + ' ' + order.getCreated().toLocalDate()}"></h1></center>
+    <div style="font-size: x-large">
+        <div class="container">
+            <div class="container__l1">
+                <div class="item">
+                    ФИО покупателя:
+                </div>
+                <div class="item" th:text="${order.getUser().getSurName() + ' ' + order.getUser().getFirstName() + ' ' + order.getUser().getLastName()}"></div>
+                <div class="item">
+                    Сотрудник, сформировавший заказ:
+                </div>
+                <div class="item" th:text="${order.getEmployee().getSurName() + ' ' + order.getEmployee().getFirstName()}"></div>
+                <div class="item">
+                    Общая стоимость заказа:
+                </div>
+                <div class="item" th:text="${order.getOrderCost()}"></div>
+                <div class="item">
+                    Скидка:
+                </div>
+                <div class="item" th:text="${order.getDiscount()}"></div>
+                <div class="item">
+                    Выдан ли заказ
+                </div>
+                <div class="item" th:if="${order.isIssued() == false}" th:text="Нет"></div>
+                <div class="item" th:unless="${order.isIssued() == false}" th:text="Да"></div>
+            </div>
+
+            <div class="container__r2" id="detailContainer">
+                <label>Наименование детали</label>
+                <label>Количество деталей</label>
+                <label>Общая стоимость деталей</label>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

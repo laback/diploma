@@ -3,9 +3,12 @@ package com.example.application.controller;
 import com.example.application.model.Category;
 import com.example.application.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @Controller
 public class CategoryController {
@@ -19,12 +22,15 @@ public class CategoryController {
 
     //Получает все категори
     @GetMapping("user/categories/{page}")
-    public String getAllCategories(Model model, @PathVariable int page){
+    public String getAllCategories(Model model, @PathVariable int page, @Param("parentCategoryName") String parentCategoryName){
 
-        model.addAttribute("categories", categoryService.getAllCategoriesByPage(page));
+        var categories = categoryService.getAllCategories(parentCategoryName);
 
+        model.addAttribute("categories", categoryService.getCategoriesByPage(categories, page));
+
+        model.addAttribute("parentCategoryName", parentCategoryName);
         model.addAttribute("page", page);
-        model.addAttribute("maxPages", categoryService.getMaxPages());
+        model.addAttribute("maxPages", categoryService.getMaxPages(categories));
         return "categories/index";
     }
 

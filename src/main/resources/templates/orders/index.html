@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body bgcolor="#f0f8ff">
+<div layout:fragment="content">
+
+    <center><h1>Список заказов</h1></center>
+
+    <form align="center" th:action="@{http://localhost:8001/user/order/0}">
+        Фамилия покупателя : <input type="text" name="customerSurname" id="customerSurname" size="50" th:value="${customerSurname}" />
+        &nbsp;
+        Фамилия продавца: <input type="text" name="employeeSurname" id="employeeSurname" size="50" th:value="${employeeSurname}" />
+
+        Дата заказа: <input type="date" name="orderDate" id="orderDate" size="50" th:value="${orderDate}" />
+        &nbsp;
+        <input type="submit" class="btn btn-success" value="Найти" />
+    </form>
+
+    <br>
+
+    <h1 th:if="${orders.isEmpty()}" align="center">Нет заказов</h1>
+    <table th:unless="${orders.isEmpty()}" class="table table-striped table-bordered ">
+        <tr>
+            <th class="align-middle text-center">Покупатель</th>
+            <th class="align-middle text-center">Сотрудник, сформировавший заказ</th>
+            <th class="align-middle text-center">Дата формирования заказа</th>
+            <th class="align-middle text-center">Общая стоимость заказа</th>
+            <th class="align-middle text-center">Выдан ли заказ</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr th:each="order : ${orders}">
+            <td class="align-middle text-center" th:text="${order.getUser().getSurName() + ' ' + order.getUser().getFirstName() + ' ' + order.getUser().getLastName()}"></td>
+            <td class="align-middle text-center" th:text="${order.getEmployee().getSurName() + ' ' + order.getEmployee().getFirstName() + ' ' + order.getEmployee().getLastName()}"></td>
+            <td class="align-middle text-center" th:text="${order.getCreated()}"></td>
+            <td class="align-middle text-center" th:text="${order.getOrderCost() - order.getDiscount()}"></td>
+            <td th:if="${order.isIssued() == false}" class="align-middle text-center" th:text="Нет"></td>
+            <td th:unless="${order.isIssued() == false}" class="align-middle text-center" th:text="Да"></td>
+            <td class="align-middle text-center">
+                <a class="btn btn-secondary" th:href="'/user/order/getOrder/' + ${order.getId()}">Подробнее</a>
+            </td>
+            <td th:if="${order.isIssued() == false}" class="align-middle text-center">
+                <a class="btn btn-secondary" th:href="'/user/order/issue/' + ${order.getId()}">Выдать заказ</a>
+            </td>
+        </tr>
+
+    </table>
+
+    <div style="display: inline-block" th:if="${page > 0}">
+        <a class="btn btn-secondary" th:href="${page - 1}">Назад</a>
+    </div>
+    <div style="display: inline-block; float: right"  th:if="${page < maxPages}">
+        <a class="btn btn-secondary" th:href="${page + 1}">Вперёд</a>
+    </div>
+    <div style="display: inline-block; margin-left: 46%">
+        <a class="btn btn-success" th:href="'/user/order/add'">Добавить заказ</a>
+    </div>
+</div>
+</body>
+</html>

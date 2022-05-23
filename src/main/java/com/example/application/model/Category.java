@@ -3,11 +3,15 @@ package com.example.application.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "categories")
 @Data
 public class Category extends BaseEntity{
+
+    @Transient
+    private int detailsCount;
 
     @Column(name = "category_name")
     private String categoryName;

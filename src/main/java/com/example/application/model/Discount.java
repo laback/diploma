@@ -13,5 +13,14 @@ public class Discount extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "discount")
     private float discount;
+
+    public Discount(User user) {
+        this.user = user;
+        discount = 0;
+    }
+
+    public Discount() {
+    }
 }

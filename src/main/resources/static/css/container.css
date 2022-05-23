@@ -1,0 +1,26 @@
+.container,
+.container__l,
+.container__r {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-content: flex-start;
+    border: 2px solid red;
+}
+
+.container__l,
+.container__r {
+    flex: 0 1 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    margin: 5px;
+    padding: 5px;
+    border: 2px solid blue;
+}
+
+.item {
+    margin: 5px;
+    padding: 5px;
+    border: 2px solid red;
+}

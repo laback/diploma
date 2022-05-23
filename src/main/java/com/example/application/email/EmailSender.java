@@ -1,5 +1,6 @@
 package com.example.application.email;
 
+import com.example.application.model.Order;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,10 @@ public class EmailSender {
         properties.put(PROPERTY_STARTTLS_KEY, PROPERTY_AUTH_AND_STARTTLS_VALUE);
         properties.put(PROPERTY_FACTORY_PORT_KEY, PROPERTY_PORT_VALUE);
         properties.put(PROPERTY_FACTORY_CLASS_KEY, PROPERTY_FACTORY_CLASS_VALUE);
+    }
+
+    public void sendOrderNotif(String to, Order order) throws MessagingException {
+        sendMessage(to, READY_ORDER_THEME, "Ваш заказ " + order + " готов к выдаче. Детали уточняйте у продавца");
     }
 
     //Отправляет письмо с данными для входа на почту
