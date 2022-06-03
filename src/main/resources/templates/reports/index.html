@@ -28,7 +28,50 @@
                     <input type="submit" class="btn btn-success" value="Сформировать отчёт" />
                 </div>
             </form>
+
+            <form th:action="@{report/periodDetailReport}">
+                <div class="item">
+                    <output>Детали, проданные между указанными датами</output>
+                </div>
+                <div class="item">
+                    <label for="beginDate">Введите начальную дату</label>
+                    <input type="datetime-local" name="beginDate"/>
+                </div>
+                <div class="item">
+                    <label for="endDate">Введите конечную дату</label>
+                    <input type="datetime-local" name="endDate"/>
+                </div>
+                <div class="item" align="center">
+                    <input type="submit" class="btn btn-success" value="Сформировать отчёт" />
+                </div>
+            </form>
         </div>
+
+        <div class="container__r">
+            <form th:action="@{report/employeeSalesReport}">
+                <div class="item">
+                    <output>Заказы сотрудника, сформированные между указанными датами</output>
+                </div>
+                <div class="item">
+                    <label for="user">Выберите сотрудника</label><br>
+                    <select name="user" id="user">
+                        <option th:each="selectedUser : ${users}" th:value="${selectedUser.getId()}" th:text="${selectedUser.getFio()}"></option>
+                    </select>
+                </div>
+                <div class="item">
+                    <label for="beginDate">Введите начальную дату</label>
+                    <input type="datetime-local" name="beginDate"/>
+                </div>
+                <div class="item">
+                    <label for="endDate">Введите конечную дату</label>
+                    <input type="datetime-local" name="endDate"/>
+                </div>
+                <div class="item" align="center">
+                    <input type="submit" class="btn btn-success" value="Сформировать отчёт" />
+                </div>
+            </form>
+        </div>
+
     </div>
 </div>
 </body>

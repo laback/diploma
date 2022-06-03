@@ -1,12 +1,13 @@
 package com.by.gomel.gstu.model;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
+@Entity(name = "orders")
 @Table(name = "orders")
 @Data
 public class Order extends BaseEntity{
@@ -29,6 +30,7 @@ public class Order extends BaseEntity{
     private float discount;
 
     @Column(name = "planned_issue_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate plannedIssueDate;
 
     @Transient
