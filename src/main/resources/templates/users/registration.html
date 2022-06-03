@@ -5,7 +5,10 @@
     <body bgcolor="#f0f8ff">
         <div layout:fragment="content">
             <center><h1>Регистрация нового пользователя</h1></center>
-            <form align="center" th:action="@{/admin/registration}" method="post" th:object="${userForm}">
+            <p th:if="${error}" class="error" style="color : red; font-size: large; text-align: center">
+                Пользователь с такой почтой уже зарегистрирован
+            </p>
+            <form align="center" th:action="@{/user/registration}" method="post" th:object="${userForm}">
                 <div class="form-group">
                     <label for="surname">Фамилия</label><br>
                     <input type="text" id="surname" placeholder="Введите фамилию" required th:field="*{surName}"><br>
@@ -37,29 +40,6 @@
                     <input type="submit" class="btn btn-success" value="Зарегистрировать пользователя" />
                 </div>
             </form>
-
-            <script>
-
-                document.getElementById('email').hidden = true;
-                document.getElementById('emailLabel').hidden = true;
-
-                function change(){
-
-                    let selected = document.getElementById('roleId').value;
-
-                    let hide = document.getElementById('email');
-                    let hideLabel = document.getElementById('emailLabel');
-
-                    if(selected === '3'){
-                        hide.hidden = true;
-                        hideLabel.hidden = true;
-                    }
-                    else {
-                        hide.hidden = false;
-                        hideLabel.hidden = false;
-                    }
-                }
-            </script>
         </div>
     </body>
 </html>

@@ -204,7 +204,7 @@
                         </a>
                     </li>
                     <li style="float: left">
-                        <a style="font-size: 15px; margin-top: 15px; padding-left: 0; line-height: 15px; background: white">
+                        <a style="font-size: 15px; margin-top: 15px; padding-left: 0; line-height: 15px; background: white; color:#191970">
                             Автоматизированная система учёта <br> продажи автозапчастей для <br> индивидуального предпринимателя
                         </a>
                     </li>
@@ -228,7 +228,7 @@
                         <ul class="submenu">
                             <li><a th:href="@{/changePassword}">Сменить пароль</a></li>
                             <li><a th:href="@{/admin/userList}" sec:authorize="hasAuthority('ROLE_ADMIN')">Управление пользователями</a></li>
-                            <li><a th:href="@{/admin/registration}" sec:authorize="hasAuthority('ROLE_ADMIN')">Зарегистрировать пользователя</a></li>
+                            <li><a th:href="@{/user/registration}">Зарегистрировать пользователя</a></li>
                         </ul>
                     </li>
                 </ul>

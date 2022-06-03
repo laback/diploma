@@ -28,6 +28,7 @@
             <th class="align-middle text-center">Покупатель</th>
             <th class="align-middle text-center">Сотрудник, сформировавший заказ</th>
             <th class="align-middle text-center">Дата формирования заказа</th>
+            <th class="align-middle text-center">Планируемая дата выдачи заказа</th>
             <th class="align-middle text-center">Общая стоимость заказа</th>
             <th class="align-middle text-center">Выдан ли заказ</th>
             <th></th>
@@ -37,6 +38,7 @@
             <td class="align-middle text-center" th:text="${order.getUser().getSurName() + ' ' + order.getUser().getFirstName() + ' ' + order.getUser().getLastName()}"></td>
             <td class="align-middle text-center" th:text="${order.getEmployee().getSurName() + ' ' + order.getEmployee().getFirstName() + ' ' + order.getEmployee().getLastName()}"></td>
             <td class="align-middle text-center" th:text="${order.getCreated()}"></td>
+            <td class="align-middle text-center" th:text="${order.getPlannedIssueDate()}"></td>
             <td class="align-middle text-center" th:text="${order.getOrderCost() - order.getDiscount()}"></td>
             <td th:if="${order.isIssued() == false}" class="align-middle text-center" th:text="Нет"></td>
             <td th:unless="${order.isIssued() == false}" class="align-middle text-center" th:text="Да"></td>
