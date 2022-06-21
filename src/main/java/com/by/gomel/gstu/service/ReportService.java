@@ -26,6 +26,14 @@ public class ReportService {
         this.orderDetailRepository = orderDetailRepository;
     }
 
+    public void saveDailyReports() throws IOException {
+
+        var now = LocalDateTime.now();
+
+        savePeriodReport(now.minusHours(8), now);
+        saveDetailsSalesByPeriod(now.minusHours(8), now);
+    }
+
     public void savePeriodReport(LocalDateTime beginDate, LocalDateTime endDate) throws IOException {
         ExcelSaver.savePeriodOrderReport(orderRepository.getAllByCreatedBetween(beginDate, endDate), (User) userService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
     }

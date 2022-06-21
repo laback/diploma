@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.net.UnknownHostException;
 import java.util.UUID;
 
 @Controller
@@ -117,7 +118,13 @@ public class UserController {
 
         userService.createPasswordResetTokenForUser(user, token);
 
-        userService.sendResetPasswordEmail(token, user);
+        try{
+            userService.sendResetPasswordEmail(token, user);
+        } catch (MessagingException e){
+            model.addAttribute("userExists", true);
+            model.addAttribute("networkError", true);
+            return "users/forgotPassword";
+        }
 
         model.addAttribute("resetPasswordViewModel", new ResetPasswordViewModel());
 

@@ -14,7 +14,7 @@
         <div class="container__l">
             <form th:action="@{report/periodOrderReport}">
                 <div class="item">
-                    <output>Заказы, сформированные между указанными датами</output>
+                    <output><strong>Заказы, сформированные между указанными датами</strong></output>
                 </div>
                 <div class="item">
                     <label for="beginDate">Введите начальную дату</label>
@@ -31,7 +31,7 @@
 
             <form th:action="@{report/periodDetailReport}">
                 <div class="item">
-                    <output>Детали, проданные между указанными датами</output>
+                    <output><strong>Детали, проданные между указанными датами</strong></output>
                 </div>
                 <div class="item">
                     <label for="beginDate">Введите начальную дату</label>
@@ -47,10 +47,10 @@
             </form>
         </div>
 
-        <div class="container__r">
+        <div class="container__l">
             <form th:action="@{report/employeeSalesReport}">
                 <div class="item">
-                    <output>Заказы сотрудника, сформированные между указанными датами</output>
+                    <output><strong>Заказы сотрудника, сформированные между указанными датами</strong></output>
                 </div>
                 <div class="item">
                     <label for="user">Выберите сотрудника</label><br>

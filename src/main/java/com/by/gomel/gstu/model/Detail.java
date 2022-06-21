@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@Entity
+@Entity(name = "details")
 @Table(name = "details")
 @SuppressWarnings("JpaAttributeTypeInspection")
 @Data
@@ -42,9 +42,6 @@ public class Detail extends BaseEntity{
     @JoinColumn(name = "analog_group_id")
     private AnalogGroup analogGroup;
 
-    @Transient
-    private String stringAttributes;
-
     public Detail() {
     }
 
@@ -52,12 +49,11 @@ public class Detail extends BaseEntity{
         this.detailVendorCode = detailVendorCode;
     }
 
-    public Detail(Category category, String detailVendorCode, String detailName, String detailDescription,String detailAttributes, int detailCount, float detailCost) {
+    public Detail(Category category, String detailVendorCode, String detailName, String detailDescription, int detailCount, float detailCost) {
         this.category = category;
         this.detailVendorCode = detailVendorCode;
         this.detailName = detailName;
         this.detailDescription = detailDescription;
-        this.stringAttributes = detailAttributes;
         this.detailCount = detailCount;
         this.detailCost = detailCost;
     }

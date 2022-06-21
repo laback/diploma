@@ -42,35 +42,39 @@
 
     </script>
     <center><h1>Добавление детали</h1></center>
+
+    <p th:if="${networkError}" class="error" style="color : red; font-size: large; text-align: center">
+        Проверьте интернет подключение
+    </p>
     <form th:action="@{/user/detail}" method="post" th:object="${detail}">
         <input type="hidden" th:field="*{stringAttributes}" id="detailAttributes">
         <div class="container">
             <div class="container__l">
                 <div class="item">
                     <label for="detailName">Наименование детали</label><br>
-                    <input type="text" id="detailName" placeholder="Введите имя детали" required th:field="*{detailName}"><br>
+                    <input type="text" id="detailName" placeholder="Введите имя детали" required th:field="*{detail.detailName}"><br>
                 </div>
                 <div class="item">
                     <label for="detailVendorCode">Vin код детали</label><br>
-                    <input type="text" id="detailVendorCode" placeholder="Введите vin код" required th:field="*{detailVendorCode}"><br>
+                    <input type="text" id="detailVendorCode" placeholder="Введите vin код" required th:field="*{detail.detailVendorCode}"><br>
                 </div>
                 <div class="item">
                     <label for="detailDescription">Описание детали</label><br>
-                    <input type="text" id="detailDescription" placeholder="Введите описание детали" required th:field="*{detailDescription}"><br>
+                    <input type="text" id="detailDescription" placeholder="Введите описание детали" required th:field="*{detail.detailDescription}"><br>
                 </div>
                 <div class="form-group">
                     <label for="category">Выберите категорию детали</label><br>
-                    <select th:field="*{category}" id="category">
+                    <select th:field="*{detail.category}" id="category">
                         <option th:each="selectedCategory : ${categories}" th:value="${selectedCategory.id}" th:text="${selectedCategory.getCategoryName()}"></option>
                     </select>
                 </div>
                 <div class="item">
                     <label for="detailCount">Количество деталей</label><br>
-                    <input type="number" id="detailCount" placeholder="Введите количество деталей" required th:field="*{detailCount}"><br>
+                    <input type="number" id="detailCount" placeholder="Введите количество деталей" required th:field="*{detail.detailCount}"><br>
                 </div>
                 <div class="item">
                     <label for="detailCost">Стоимость детали</label><br>
-                    <input type="number" id="detailCost" placeholder="Введите стоимость детали" required th:field="*{detailCost}"><br>
+                    <input type="number" id="detailCost" placeholder="Введите стоимость детали" required th:field="*{detail.detailCost}"><br>
                 </div>
             </div>
             <div class="container__r">

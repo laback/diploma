@@ -5,6 +5,7 @@ import com.by.gomel.gstu.service.DetailService;
 import com.by.gomel.gstu.service.OrderDetailService;
 import com.by.gomel.gstu.service.OrderService;
 import com.by.gomel.gstu.service.UserService;
+import com.by.gomel.gstu.viewModel.OrderViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -35,16 +36,17 @@ public class OrderController {
 
         var orders = orderService.getOrderByParams(customerSurname, employeeSurname, orderDate);
 
+        model.addAttribute("maxPages", orderService.getMaxPages(orders));
+
         model.addAttribute("orders", orderService.getAllOrders(page, orders));
 
         model.addAttribute("page", page);
-        model.addAttribute("maxPages", orderService.getMaxPages(orderService.getAllOrders(page, orders)));
 
         return "orders/index";
     }
 
     @GetMapping("user/order/add")
-    public String getAddForm(Model model, @ModelAttribute(name = "order") Order order){
+    public String getAddForm(Model model, @ModelAttribute(name = "order") OrderViewModel orderViewModel){
         model.addAttribute("users", userService.getAll());
         model.addAttribute("details", detailService.getAllDetailsInStock());
 
@@ -53,11 +55,11 @@ public class OrderController {
     }
 
     @PostMapping("user/order")
-    public String addOrder(@ModelAttribute("order") Order order){
+    public String addOrder(@ModelAttribute("order") OrderViewModel orderViewModel){
 
-        String expression = order.getDetails();
+        String expression = orderViewModel.getDetails();
 
-        order = orderService.addOrder(order);
+        var order = orderService.addOrder(orderViewModel.getOrder());
 
         float cost = orderDetailService.setDetailsInOrder(expression, order);
 

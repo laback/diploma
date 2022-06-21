@@ -105,17 +105,17 @@
             <div class="container__l">
                 <div class="item">
                     <label for="user">Выберите покупателя</label><br>
-                    <select th:field="*{user}" id="user">
+                    <select th:field="*{order.user}" id="user">
                         <option th:each="selectedUser : ${users}" th:value="${selectedUser.id}" th:text="${selectedUser.getSurName() + ' ' + selectedUser.getFirstName() + ' ' + selectedUser.getLastName()}"></option>
                     </select>
                 </div>
                 <div class="item">
                     <label for="discount" id="discountLabel">Введите размер скидки</label>
-                    <input type="number" title="Если размер указанной скидки превысит возможный, то установится максимально возможный размер скидки" id="discount" name="discount" th:field="*{discount}" placeholder="Введите размер скидки">
+                    <input type="number" title="Если размер указанной скидки превысит возможный, то установится максимально возможный размер скидки" id="discount" name="discount" th:field="*{order.discount}" placeholder="Введите размер скидки">
                 </div>
                 <div class="item">
                     <label for="issueDate" id="issueDateLabes">Выберите предполагаемую дату выдачи заказа</label>
-                    <input type="date" title="Если размер указанной скидки превысит возможный, то установится максимально возможный размер скидки" id="issueDate" name="issueDate" th:field="*{plannedIssueDate}" placeholder="Введите размер скидки">
+                    <input type="date" title="Если размер указанной скидки превысит возможный, то установится максимально возможный размер скидки" id="issueDate" name="issueDate" th:field="*{order.plannedIssueDate}" placeholder="Введите размер скидки">
                 </div>
             </div>
 

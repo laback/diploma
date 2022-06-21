@@ -3,6 +3,7 @@ package com.by.gomel.gstu.controller;
 import com.by.gomel.gstu.model.Detail;
 import com.by.gomel.gstu.service.CategoryService;
 import com.by.gomel.gstu.service.DetailService;
+import com.by.gomel.gstu.viewModel.DetailViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,16 +34,16 @@ public class DetailController {
     @GetMapping("/user/detail/{page}")
     public String getAllDetails(Model model, @PathVariable int page, @Param(value = "vinCode") String vinCode, @Param(value = "detailName") String detailName, @Param(value = "isInStock") String isInStock) throws IOException {
 
-        List<Detail> details;
-
-        if(vinCode != null && !vinCode.isBlank()){
-            details = detailService.getAnalogsByVinCodeAndPage(vinCode, page);
-        } else{
-            details = detailService.getAllDetails(page, detailName);
-        }
+        List<Detail> details = null;
 
         if("true".equals(isInStock)){
-            details = details.stream().filter(detail -> detail.getDetailCount() > 0).collect(Collectors.toList());
+            details = detailService.getAllDetails().stream().filter(detail -> detail.getDetailCount() > 0).collect(Collectors.toList());
+        }
+
+        if(vinCode != null && !vinCode.isBlank()){
+            details = details == null ? detailService.getAnalogsByVinCodeAndPage(vinCode, page, model) : detailService.getAnalogsByVinCodeAndPage(vinCode, page, details, model);
+        } else{
+            details = details == null ? detailService.getAllDetails(page, detailName, model) : detailService.getAllDetails(page, detailName, details, model);
         }
 
         model.addAttribute("details", details);
@@ -52,7 +54,6 @@ public class DetailController {
         model.addAttribute("detailName", detailName);
 
         model.addAttribute("page", page);
-        model.addAttribute("maxPages", detailService.getMaxPages(details));
 
         return "details/index";
     }
@@ -97,7 +98,7 @@ public class DetailController {
     }
 
     @GetMapping("user/detail/add")
-    public String getAddForm(Model model, @ModelAttribute("detail") Detail detail){
+    public String getAddForm(Model model, @ModelAttribute("detail") DetailViewModel detailViewModel){
 
         model.addAttribute("categories", categoryService.getAllChildCategory());
 
@@ -105,9 +106,14 @@ public class DetailController {
     }
 
     @PostMapping("user/detail")
-    public String addDetail(@ModelAttribute("detail") Detail detail){
+    public String addDetail(@ModelAttribute("detail") DetailViewModel detailViewModel, Model model){
 
-        detailService.addDetail(detail);
+        try{
+            detailService.addDetail(detailViewModel);
+        } catch (IOException e){
+            model.addAttribute("networkError", true);
+            return "details/add";
+        }
 
         return "redirect:/user/detail/0";
     }

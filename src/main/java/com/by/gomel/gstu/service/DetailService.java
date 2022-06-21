@@ -2,6 +2,7 @@ package com.by.gomel.gstu.service;
 
 import com.by.gomel.gstu.model.AnalogGroup;
 import com.by.gomel.gstu.repository.AnalogGroupRepository;
+import com.by.gomel.gstu.viewModel.DetailViewModel;
 import com.by.gomel.gstu.viewModel.OrderDetailViewModel;
 import com.by.gomel.gstu.model.Detail;
 import com.by.gomel.gstu.repository.DetailRepository;
@@ -13,6 +14,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.util.*;
@@ -35,12 +37,25 @@ public class DetailService {
         this.analogGroupRepository = analogGroupRepository;
     }
 
-    public List<Detail> getAllDetails(int page, String detailName){
+    public List<Detail> getAllDetails(int page, String detailName, Model model){
         var details = detailRepository.findAll();
 
         if(detailName != null && !detailName.isBlank()){
             details = details.stream().filter(detail -> detail.getDetailName().toLowerCase().contains(detailName.toLowerCase())).collect(Collectors.toList());
         }
+
+        model.addAttribute("maxPages", getMaxPages(details));
+
+        return PageUtils.getAllEntitiesByPage(details, page);
+    }
+
+    public List<Detail> getAllDetails(int page, String detailName, List<Detail> details, Model model){
+
+        if(detailName != null && !detailName.isBlank()){
+            details = details.stream().filter(detail -> detail.getDetailName().toLowerCase().contains(detailName.toLowerCase())).collect(Collectors.toList());
+        }
+
+        model.addAttribute("maxPages", getMaxPages(details));
 
         return PageUtils.getAllEntitiesByPage(details, page);
     }
@@ -53,7 +68,7 @@ public class DetailService {
         return detailRepository.findAll().stream().filter(detail -> detail.getDetailCount() > 0).collect(Collectors.toList());
     }
 
-    public List<Detail> getAnalogsByVinCodeAndPage(String vinCode, int page) {
+    public List<Detail> getAnalogsByVinCodeAndPage(String vinCode, int page, Model model) {
 
         var detail = getDetailByVendorCode(vinCode);
 
@@ -63,6 +78,26 @@ public class DetailService {
             var analogGroup = analogGroupRepository.getAnalogGroupByAnalogGroupName(detail.getAnalogGroup().getAnalogGroupName());
 
             analogs = detailRepository.getDetailsByAnalogGroup(analogGroup);
+
+            model.addAttribute("maxPages", getMaxPages(analogs));
+        }
+
+        return PageUtils.getAllEntitiesByPage(analogs, page);
+    }
+
+    public List<Detail> getAnalogsByVinCodeAndPage(String vinCode, int page, List<Detail> details, Model model) {
+
+        var detail = getDetailByVendorCode(vinCode);
+
+        List<Detail> analogs = new ArrayList<>();
+
+        if(details != null){
+            var analogGroup = analogGroupRepository.getAnalogGroupByAnalogGroupName(detail.getAnalogGroup().getAnalogGroupName());
+
+            analogs = details.stream().filter(x -> x.getAnalogGroup().equals(analogGroup)).collect(Collectors.toList());
+
+
+            model.addAttribute("maxPages", getMaxPages(analogs));
         }
 
         return PageUtils.getAllEntitiesByPage(analogs, page);
@@ -126,17 +161,14 @@ public class DetailService {
         return result;
     }
 
-    public void addDetail(Detail detail){
-        if(!detail.getStringAttributes().isEmpty()){
-            detail.setDetailAttributes(Arrays.stream(detail.getStringAttributes().split(","))
+    public void addDetail(DetailViewModel detailViewModel) throws IOException {
+        var detail = detailViewModel.getDetail();
+        if(!detailViewModel.getStringAttributes().isEmpty()){
+            detail.setDetailAttributes(Arrays.stream(detailViewModel.getStringAttributes().split(","))
                     .map(entry -> entry.split(":"))
                     .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1])));
         }
-        try {
-            detail.setAnalogGroup(getAnalogGroupByArticleOrNew(detail.getDetailVendorCode()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        detail.setAnalogGroup(getAnalogGroupByArticleOrNew(detail.getDetailVendorCode()));
         detailRepository.save(detail);
     }
 
@@ -163,27 +195,20 @@ public class DetailService {
         }
         elements = distinctDuplicates(doc.getElementsByClass("tooltip"));
 
-        Detail analog = null;
+        List<String> codes = elements.stream().map(element -> element.childNode(0).outerHtml()).collect(Collectors.toList());
 
-        for(var element : elements){
-            var detail = getDetailByVendorCode(element.childNode(0).outerHtml());
-
-            if(detail != null && detail.getDetailCount() > 0){
-                analog = detail;
-                break;
-            }
-        }
+        var analogs = detailRepository.getDetailsByArticles(codes);
 
         AnalogGroup result;
 
-        if(analog == null){
+        if(analogs.isEmpty()){
             String groupName = UUID.randomUUID().toString();
 
             analogGroupRepository.save(new AnalogGroup(groupName));
 
             result = analogGroupRepository.getAnalogGroupByAnalogGroupName(groupName);
         } else{
-            result = analog.getAnalogGroup();
+            result = analogs.get(0).getAnalogGroup();
         }
 
         return result;

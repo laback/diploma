@@ -33,9 +33,6 @@ public class Order extends BaseEntity{
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate plannedIssueDate;
 
-    @Transient
-    private String details;
-
     public Order(User user, User employee) {
         this.user = user;
         this.employee = employee;

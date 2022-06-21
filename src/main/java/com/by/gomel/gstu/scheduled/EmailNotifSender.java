@@ -20,7 +20,7 @@ public class EmailNotifSender {
         this.sender = sender;
     }
 
-    @Scheduled(cron = "@midnight")
+    @Scheduled(cron = "0 0 9 * * *")
     public void sendEmailNotif(){
         orderService.getTodaysOrder().forEach(order -> {
             try {
@@ -30,4 +30,6 @@ public class EmailNotifSender {
             }
         });
     }
+
+
 }

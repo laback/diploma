@@ -12,6 +12,9 @@ public class PageUtils {
     private PageUtils(){}
 
     public static <T> long getMaxPages(List<T> entities){
+        if(entities.size() == 5){
+            return 0;
+        }
         return (long) Math.ceil(entities.size() / ELEMENTS_PER_PAGE);
     }
 

@@ -5,12 +5,14 @@ import com.by.gomel.gstu.model.Detail;
 import com.by.gomel.gstu.model.Order;
 import com.by.gomel.gstu.model.User;
 import com.by.gomel.gstu.service.*;
+import com.by.gomel.gstu.viewModel.DetailViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +48,7 @@ public class DataLoader implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) throws MessagingException {
+    public void run(ApplicationArguments args) throws MessagingException, IOException {
         addRolesIfAbsent();
         addAdminIfAbsent();
         addUsersIfAbsent();
@@ -148,7 +150,7 @@ public class DataLoader implements ApplicationRunner {
         return orders == null ? orderService.getAllOrders().stream().limit(5).collect(Collectors.toList()) : orders;
     }
 
-    private List<Detail> addDetailsIfAbsent(){
+    private List<Detail> addDetailsIfAbsent() throws IOException {
         List<Detail> details = null;
 
         if(detailService.getAllDetails().isEmpty()){
@@ -157,76 +159,104 @@ public class DataLoader implements ApplicationRunner {
             Category complect = categoryService.getCategoryByName("Комплект ГРМ");
             Category remen = categoryService.getCategoryByName("Ремень ГРМ");
 
-            detailService.addDetail(new Detail(
-                    accum,
-                    "0 092 S30 070",
-                    "EXIDE",
-                    "Premium аккумулятор 12V 72Ah 720A ETN 0(R+) B13 278x175x175 16,5kg",
-                    getAccumAttribute(12, 72, 278, 176, 175, 0, "B13", 720, "EN"),
-                    100,
-                    300
-                    )
+            detailService.addDetail(
+                new DetailViewModel(
+                    new Detail(
+                        accum,
+                        "0 092 S30 070",
+                        "EXIDE",
+                        "Premium аккумулятор 12V 72Ah 720A ETN 0(R+) B13 278x175x175 16,5kg",
+                        100,
+                        300
+                    ),
+                    getAccumAttribute(12, 72, 278, 176, 175, 0, "B13", 720, "EN")
+                )
             );
 
-            detailService.addDetail(new Detail(
-                    accum,
-                    "EC652",
-                    "EXIDE",
-                    "Батарея аккумуляторная \"Classic\", 12в 65а/ч",
-                    getAccumAttribute(12, 65, 278, 175, 175, 0, "B13", 540, "EN"),
-                    50,
-                    240
-            ));
+            detailService.addDetail(
+                new DetailViewModel(
+                    new Detail(
+                        accum,
+                        "EC652",
+                        "EXIDE",
+                        "Батарея аккумуляторная \"Classic\", 12в 65а/ч",
+                        50,
+                        240
+                    ),
+                    getAccumAttribute(12, 65, 278, 175, 175, 0, "B13", 540, "EN")
+                )
+            );
 
-            detailService.addDetail(new Detail(
-                    accum,
-                    "EA640",
-                    "EXIDE",
-                    "Аккумулятор",
-                    getAccumAttribute(12, 64, 242, 175, 190, 0, "B13", 640, "EN"),
-                    73,
-                    310
-            ));
+            detailService.addDetail(
+                new DetailViewModel(
+                    new Detail(
+                        accum,
+                        "EA640",
+                        "EXIDE",
+                        "Аккумулятор",
 
-            detailService.addDetail(new Detail(
-                    accum,
-                    "0092M60180",
-                    "BOSCH",
-                    "Аккумулятор для мототехники BOSCH MOBA AGM M6 12V 12AH 200A (YTX14-4/YTX14-BS) 152x88x147mm 5.02kg",
-                    getAccumAttribute(12, 12, 152, 88, 147, 1, "B00", 200, "Y5"),
-                    42,
-                    225
-            ));
+                        73,
+                        310
+                    ),
+                    getAccumAttribute(12, 64, 242, 175, 190, 0, "B13", 640, "EN")
+                )
+            );
 
-            detailService.addDetail(new Detail(
-                    accum,
-                    "AGM1212F",
-                    "EXIDE",
-                    "Аккумулятор",
-                    getAccumAttribute(12, 12, 100, 100, 150, 3, "B0", 150, "Y5"),
-                    56,
-                    150
-            ));
+            detailService.addDetail(
+                new DetailViewModel(
+                    new Detail(
+                        accum,
+                        "0092M60180",
+                        "BOSCH",
+                        "Аккумулятор для мототехники BOSCH MOBA AGM M6 12V 12AH 200A (YTX14-4/YTX14-BS) 152x88x147mm 5.02kg",
+                        42,
+                        225
+                    ),
+                    getAccumAttribute(12, 12, 152, 88, 147, 1, "B00", 200, "Y5")
+                )
+            );
 
-            detailService.addDetail(new Detail(
-                    complect,
-                    "KTB259",
-                    "DAYCO",
-                    "Комплект ремня ГРМ",
-                    "",
-                    30,
-                    120
-            ));
+            detailService.addDetail(
+                new DetailViewModel(
+                    new Detail(
+                        accum,
+                        "AGM1212F",
+                        "EXIDE",
+                        "Аккумулятор",
+                        56,
+                        150
+                    ),
+                    getAccumAttribute(12, 12, 100, 100, 150, 3, "B0", 150, "Y5")
+                )
+            );
 
-            detailService.addDetail(new Detail(
-                    remen,
-                    "5244XS",
-                    "GATES",
-                    "Ремень ГРМ",
-                    getRemenAttribute("STT-1", "Стекловолокно", "HNBR (Hydrierter Acryl-Nitril-Butadien-Kautschuk)", "черный", 148, 25, 9, 1410),
-                    40,
-                    35
-            ));
+            detailService.addDetail(
+                new DetailViewModel(
+                    new Detail(
+                        complect,
+                        "KTB259",
+                        "DAYCO",
+                        "Комплект ремня ГРМ",
+                        30,
+                        120
+                    ),
+                    ""
+                )
+            );
+
+            detailService.addDetail(
+                new DetailViewModel(
+                    new Detail(
+                        remen,
+                        "5244XS",
+                        "GATES",
+                        "Ремень ГРМ",
+                        40,
+                        35
+                    ),
+                    getRemenAttribute("STT-1", "Стекловолокно", "HNBR (Hydrierter Acryl-Nitril-Butadien-Kautschuk)", "черный", 148, 25, 9, 1410)
+                )
+            );
 
             details = detailService.getAllDetails();
         }
